@@ -1,0 +1,33 @@
+server:
+  port: 8989
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/msblog?characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 1024
+    # 文件上传的相关配置
+  servlet:
+    multipart:
+      max-file-size: 4MB
+      max-request-size: 7MB
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    # 标准的日志打印信息
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: delFlag
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      # 如果你在数据库中忘了主键自增，这里会按照雪花算法生成一个一个主键
+      id-type: auto
+# 腾讯云cos配置
+cos:
+  secretId: xxxx
+  secretKey: xxxx
+  regionName: ap-shanghai
+  bucketName: xxxx
+  fileName: xxxx

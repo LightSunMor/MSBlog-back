@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.morSun.mapper.MenuMapper">
+
+    <resultMap id="BaseResultMap" type="com.morSun.pojo.Menu">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="menuName" column="menu_name" jdbcType="VARCHAR"/>
+            <result property="parentId" column="parent_id" jdbcType="BIGINT"/>
+            <result property="orderNum" column="order_num" jdbcType="INTEGER"/>
+            <result property="path" column="path" jdbcType="VARCHAR"/>
+            <result property="component" column="component" jdbcType="VARCHAR"/>
+            <result property="isFrame" column="is_frame" jdbcType="INTEGER"/>
+            <result property="menuType" column="menu_type" jdbcType="CHAR"/>
+            <result property="visible" column="visible" jdbcType="CHAR"/>
+            <result property="status" column="status" jdbcType="CHAR"/>
+            <result property="perms" column="perms" jdbcType="VARCHAR"/>
+            <result property="icon" column="icon" jdbcType="VARCHAR"/>
+            <result property="createBy" column="create_by" jdbcType="BIGINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="BIGINT"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="delFlag" column="del_flag" jdbcType="CHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,menu_name,parent_id,
+        order_num,path,component,
+        is_frame,menu_type,visible,
+        status,perms,icon,
+        create_by,create_time,update_by,
+        update_time,remark,del_flag
+    </sql>
+    <!--根据用户id查询权限关键字,使用自己的sql，删除字段就失去了自动拼接的能力了-->
+    <select id="getPermsByUserId" resultType="java.lang.String" parameterType="java.lang.Long">
+        select
+            distinct msm.perms
+        from
+            ms_sys_menu msm  join ms_sys_role_menu msrm
+        on  msm.id=msrm.menu_id  join ms_sys_user_role msur
+        on msur.role_id=msrm.role_id
+        where
+            msur.user_id=#{userId} and
+            msm.`menu_type` IN ('C','F') AND
+            msm.`status` = 0 AND
+            msm.`del_flag` = 0
+    </select>
+    <!--根据用户id查询菜单所有符合条件的信息-->
+    <select id="getMenuALLByUserId" resultType="com.morSun.pojo.Menu" parameterType="java.lang.Long">
+        select msm.*
+        from ms_sys_menu msm join ms_sys_role_menu msrm
+        on msrm.menu_id=msm.id join ms_sys_user_role msur
+        on msur.role_id=msrm.role_id
+        where msur.user_id=#{userId} and
+              msm.status=0 and
+              msm.del_flag=0
+    </select>
+</mapper>
